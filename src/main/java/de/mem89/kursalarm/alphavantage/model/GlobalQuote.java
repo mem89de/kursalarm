@@ -11,34 +11,33 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GlobalQuote {
 	@JsonProperty("01. symbol")
-	public String symbol;
+	private String symbol;
 	
 	@JsonProperty("02. open")
-	public BigDecimal open;
+	private BigDecimal open;
 	
 	@JsonProperty("03. high")
-	public BigDecimal high;
+	private BigDecimal high;
 	
 	@JsonProperty("04. low")
-	public BigDecimal low;
+	private BigDecimal low;
 	
 	@JsonProperty("05. price")
 	private BigDecimal price;
 	
 	@JsonProperty("06. volume")
-	public Integer volume;
+	private Integer volume;
 	
-//	@JsonProperty("07. latest trading day")
-//	public LocalDate latestTradingDay;
+	@JsonProperty("07. latest trading day")
+	private String latestTradingDay;
 	
 	@JsonProperty("08. previous close")
-	public BigDecimal previousClose;
+	private BigDecimal previousClose;
 	
 	@JsonProperty("09. change")
-	public BigDecimal change;
+	private BigDecimal change;
 	
-	
-//	@JsonProperty("10. change percent")
-//	public BigDecimal changePercent;
+	@JsonProperty("10. change percent")
+	private String changePercent;
 	
 }

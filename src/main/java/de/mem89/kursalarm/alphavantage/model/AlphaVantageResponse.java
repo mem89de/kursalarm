@@ -11,7 +11,13 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AlphaVantageResponse {
 	@JsonProperty("Global Quote")
-	public GlobalQuote globalQuote;
+	private GlobalQuote globalQuote;
 	
-	public List<SearchMatch> bestMatches;
+	private List<SearchMatch> bestMatches;
+	
+	@JsonProperty("Note")
+	private String note;
+	
+	@JsonProperty("Information")
+	private String information;
 }

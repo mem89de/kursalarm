@@ -35,5 +35,4 @@ public class PriceProcessor implements ItemProcessor<Stock, Stock> {
 		LOG.debug("stock = {}", stock);
 		return stock;
 	}
-
 }

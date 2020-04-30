@@ -4,19 +4,22 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 
 import de.mem89.kursalarm.alphavantage.StockTimeSeriesService;
+import de.mem89.kursalarm.alphavantage.model.AlphaVantageResponse;
 import de.mem89.kursalarm.alphavantage.model.GlobalQuote;
 import de.mem89.kursalarm.alphavantage.model.SearchMatch;
-import de.mem89.kursalarm.alphavantage.model.AlphaVantageResponse;
 import de.mem89.kursalarm.alphavantage.model.StockTimeSeriesFunction;
 
 @Component(StockTimeSeriesService.BEAN_ID)
@@ -30,32 +33,32 @@ public class DefaultStockTimeSeriesService implements StockTimeSeriesService {
 	@Override
 	public GlobalQuote globalQuote(String symbol) {
 		Assert.hasText(symbol, "'symbol' must not be empty");
-		
+
 		URI uri = assembleGlobalQuoteURL(symbol);
 		LOG.debug("uri = {}", uri);
-		
-		RestTemplate restTemplate = getRestTemplate();
-		GlobalQuote globalQuote = restTemplate
-				.getForObject(uri, AlphaVantageResponse.class)
-				.getGlobalQuote();	
+
+		ResponseEntity<AlphaVantageResponse> response = getRestTemplate().getForEntity(uri, AlphaVantageResponse.class);
+		handleResponse(response);
+
+		GlobalQuote globalQuote = response.getBody().getGlobalQuote();
 		LOG.debug("globalQuote = {}", globalQuote);
-				
+
 		return globalQuote;
 	}
 
 	@Override
 	public List<SearchMatch> searchEndpoint(String keywords) {
 		Assert.hasText(keywords, "'keywords' must not be empty");
-		
+
 		URI uri = assembleSearchEndpointURL(keywords);
 		LOG.debug("uri = {}", uri);
+
+		ResponseEntity<AlphaVantageResponse> response = getRestTemplate().getForEntity(uri, AlphaVantageResponse.class);
+		handleResponse(response);
 		
-		RestTemplate restTemplate = getRestTemplate();
-		List<SearchMatch> bestMatches = restTemplate
-				.getForObject(uri, AlphaVantageResponse.class)
-				.getBestMatches();	
+		List<SearchMatch> bestMatches = response.getBody().getBestMatches();
 		LOG.debug("bestMatches = {}", bestMatches);
-		
+
 		return bestMatches;
 	}
 
@@ -95,5 +98,27 @@ public class DefaultStockTimeSeriesService implements StockTimeSeriesService {
 				.setParameter("apikey", API_KEY)
 				.setParameter("function", function.toString())
 				.setParameter("datatype", "json");
+	}
+
+	private void handleResponse(ResponseEntity<AlphaVantageResponse> response) {
+		HttpStatus statusCode = response.getStatusCode();
+		if (!HttpStatus.OK.equals(statusCode)) {
+			LOG.warn("status code = {}", statusCode);
+		}
+
+		AlphaVantageResponse body = response.getBody();
+		if (body == null) {
+			LOG.error("Response body is null");
+		} else {
+			String information = body.getInformation();
+			if(StringUtils.isNotBlank(information)) {
+				LOG.warn("information = {}", information);
+			}
+
+			String note = body.getNote();
+			if(StringUtils.isNotBlank(note)) {
+				LOG.warn("note = {}", note);
+			}
+		}
 	}
 }

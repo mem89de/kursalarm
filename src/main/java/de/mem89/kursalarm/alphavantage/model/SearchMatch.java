@@ -11,29 +11,29 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchMatch {
 	@JsonProperty("1. symbol")
-	public String symbol;
+	private String symbol;
 	
 	@JsonProperty("2. name")
-	public String name;
+	private String name;
 	
 	@JsonProperty("3. type")
-	public String type;
+	private String type;
 	
 	@JsonProperty("4. region")
-	public String region;
+	private String region;
 	
 	@JsonProperty("5. marketOpen")
-	public String marketOpen;
+	private String marketOpen;
 	
 	@JsonProperty("6. marketClose")
-	public String marketClose;
+	private String marketClose;
 	
 	@JsonProperty("7. timezone")
-	public String timezone;
+	private String timezone;
 	
 	@JsonProperty("8. currency")
-	public String currency;
+	private String currency;
 	
 	@JsonProperty("9. matchScore")
-	public BigDecimal matchScore;
+	private BigDecimal matchScore;
 }
