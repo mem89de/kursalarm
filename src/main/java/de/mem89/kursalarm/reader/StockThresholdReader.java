@@ -21,7 +21,7 @@ public class StockThresholdReader extends FlatFileItemReader<Stock> {
 	}
 	
 	private static LineMapper<Stock> getLineMapper() {
-		String[] headers = { "symbol" };
+		String[] headers = { "symbol", "upperThreshold" };
 		
 		DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB);
 		lineTokenizer.setNames(headers);
