@@ -8,10 +8,10 @@ import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
-import de.mem89.kursalarm.model.StockThreshold;
+import de.mem89.kursalarm.model.Stock;
 
 @Component(StockThresholdReader.BEAN_ID)
-public class StockThresholdReader extends FlatFileItemReader<StockThreshold> {
+public class StockThresholdReader extends FlatFileItemReader<Stock> {
 	public static final String BEAN_ID = "de.mem89.kursalarm.reader.stockThresholdReader";
 	
 	public StockThresholdReader() {
@@ -20,19 +20,18 @@ public class StockThresholdReader extends FlatFileItemReader<StockThreshold> {
 		this.setLineMapper(getLineMapper());
 	}
 	
-	private static LineMapper<StockThreshold> getLineMapper() {
-		String[] headers = { "name" };
+	private static LineMapper<Stock> getLineMapper() {
+		String[] headers = { "symbol", "upperThreshold" };
 		
 		DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB);
 		lineTokenizer.setNames(headers);
 		
-		DefaultLineMapper<StockThreshold> lineMapper = new DefaultLineMapper<StockThreshold>();
+		DefaultLineMapper<Stock> lineMapper = new DefaultLineMapper<Stock>();
 		lineMapper.setLineTokenizer(lineTokenizer);
-		BeanWrapperFieldSetMapper<StockThreshold> fieldSetMapper = new BeanWrapperFieldSetMapper<StockThreshold>();
-		fieldSetMapper.setTargetType(StockThreshold.class);
+		BeanWrapperFieldSetMapper<Stock> fieldSetMapper = new BeanWrapperFieldSetMapper<Stock>();
+		fieldSetMapper.setTargetType(Stock.class);
 		lineMapper.setFieldSetMapper(fieldSetMapper);
 
 		return lineMapper;
-		
 	}
 }
