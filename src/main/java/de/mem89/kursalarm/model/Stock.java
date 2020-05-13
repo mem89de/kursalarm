@@ -25,6 +25,6 @@ public class Stock {
 	public boolean isUpperTresholdExceeded() {
 		if (upperThreshold == null || price == null)
 			return false;
-		return price.compareTo(upperThreshold) >= 0;
+		return price.compareTo(upperThreshold) <= 0;
 	}
 }
