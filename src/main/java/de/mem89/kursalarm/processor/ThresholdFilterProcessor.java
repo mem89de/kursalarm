@@ -11,13 +11,14 @@ import de.mem89.kursalarm.model.Stock;
 @Component(ThresholdFilterProcessor.BEAN_ID)
 public class ThresholdFilterProcessor implements ItemProcessor<Stock, Stock> {
 
-	public static final String BEAN_ID = "de.mem89.kursalarm.processor.thresholdFilterProcessor";
+    public static final String BEAN_ID = "de.mem89.kursalarm.processor.thresholdFilterProcessor";
 
-	@Resource(name = StockTimeSeriesService.BEAN_ID)
-	private StockTimeSeriesService stockTimeSeriesService;
+    @Resource(name = StockTimeSeriesService.BEAN_ID)
+    private StockTimeSeriesService stockTimeSeriesService;
 
-	@Override
-	public Stock process(Stock stock) throws Exception {
-		return stock.isUpperTresholdExceeded() ? stock : null;
-	}
+    @Override
+    public Stock process(Stock stock) throws Exception {
+	if (stock == null) return null;
+	return stock.isUpperTresholdExceeded() ? stock : null;
+    }
 }
