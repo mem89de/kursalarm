@@ -1,19 +1,18 @@
 package de.mem89.kursalarm.processor;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.mem89.kursalarm.model.Stock;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ThresholdFilterProcessorTest {
 
     @InjectMocks
@@ -22,25 +21,25 @@ public class ThresholdFilterProcessorTest {
     @Test
     public void processStockExceedsThreshold() throws Exception {
 	// given
-	Stock stock = getStock(false);
+	Stock stock = createMockedStockWhereUpperThresholdIs(false);
 
 	// when
 	Stock result = processor.process(stock);
 
 	// then
-	assertThat(result, is(nullValue()));
+	assertNull(result);
     }
 
     @Test
     public void processStockDoesNotExceedThreshold() throws Exception {
 	// given
-	Stock stock = getStock(true);
+	Stock stock = createMockedStockWhereUpperThresholdIs(true);
 
 	// when
 	Stock result = processor.process(stock);
 
 	// then
-	assertThat(result, is(stock));
+	assertEquals(stock, result);
     }
 
     @Test
@@ -52,10 +51,10 @@ public class ThresholdFilterProcessorTest {
 	Stock result = processor.process(stock);
 
 	// then
-	assertThat(result, is(nullValue()));
+	assertNull(result);
     }
 
-    private Stock getStock(boolean isUpperTresholdExceeded) {
+    private Stock createMockedStockWhereUpperThresholdIs(boolean isUpperTresholdExceeded) {
 	Stock stock = mock(Stock.class);
 	doReturn(isUpperTresholdExceeded).when(stock).isUpperTresholdExceeded();
 	return stock;
