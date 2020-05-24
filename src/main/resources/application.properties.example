@@ -1,1 +1,4 @@
 alphavantage.apiKey = demo
+
+logging.level.org.springframework=WARN
+spring.main.banner-mode=off
