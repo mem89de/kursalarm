@@ -28,10 +28,6 @@ public class PriceProcessor implements ItemProcessor<Stock, Stock> {
 		GlobalQuote globalQuote = stockTimeSeriesService.globalQuote(stock.getSymbol());
 		stock.setPrice(globalQuote.getPrice());
 
-		if (stock.isUpperTresholdExceeded()) {
-			LOG.info("The price of {} is at {} and therefore below the desired thresold of {}.", stock.getDisplayName(),stock.getUpperThreshold());
-		}
-
 		LOG.debug("stock = {}", stock);
 		return stock;
 	}

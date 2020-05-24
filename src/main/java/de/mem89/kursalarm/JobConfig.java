@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 import de.mem89.kursalarm.model.Stock;
 import de.mem89.kursalarm.processor.InfoProcessor;
 import de.mem89.kursalarm.processor.PriceProcessor;
+import de.mem89.kursalarm.processor.ThresholdFilterProcessor;
 import de.mem89.kursalarm.reader.StockThresholdReader;
 import de.mem89.kursalarm.writer.LogWriter;
 
@@ -43,6 +44,9 @@ public class JobConfig {
 	@Resource(name = PriceProcessor.BEAN_ID)
 	public ItemProcessor<Stock,Stock> priceProcessor;
 	
+	@Resource(name = ThresholdFilterProcessor.BEAN_ID)
+	public ItemProcessor<Stock,Stock> thresholdFilterProcessor;
+	
 	@Resource(name = LogWriter.BEAN_ID)
 	public ItemWriter<Stock> writer;
 
@@ -50,7 +54,8 @@ public class JobConfig {
 		CompositeItemProcessor<Stock, Stock> processor = new CompositeItemProcessor<>();
 		processor.setDelegates(Arrays.asList(
 				infoProcessor, 
-				priceProcessor
+				priceProcessor,
+				thresholdFilterProcessor
 				));
 		
 		return processor;
