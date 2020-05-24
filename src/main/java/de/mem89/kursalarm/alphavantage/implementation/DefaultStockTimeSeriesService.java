@@ -17,6 +17,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 
 import de.mem89.kursalarm.alphavantage.StockTimeSeriesService;
+import de.mem89.kursalarm.alphavantage.exception.AlphaVantageException;
 import de.mem89.kursalarm.alphavantage.model.AlphaVantageResponse;
 import de.mem89.kursalarm.alphavantage.model.GlobalQuote;
 import de.mem89.kursalarm.alphavantage.model.SearchMatch;
@@ -31,7 +32,7 @@ public class DefaultStockTimeSeriesService implements StockTimeSeriesService {
 	private static Logger LOG = LoggerFactory.getLogger(DefaultStockTimeSeriesService.class);
 
 	@Override
-	public GlobalQuote globalQuote(String symbol) {
+	public GlobalQuote globalQuote(String symbol) throws AlphaVantageException {
 		Assert.hasText(symbol, "'symbol' must not be empty");
 
 		URI uri = assembleGlobalQuoteURL(symbol);
@@ -42,12 +43,13 @@ public class DefaultStockTimeSeriesService implements StockTimeSeriesService {
 
 		GlobalQuote globalQuote = response.getBody().getGlobalQuote();
 		LOG.debug("globalQuote = {}", globalQuote);
+		if(globalQuote == null) throw new AlphaVantageException();
 
 		return globalQuote;
 	}
 
 	@Override
-	public List<SearchMatch> searchEndpoint(String keywords) {
+	public List<SearchMatch> searchEndpoint(String keywords) throws AlphaVantageException {
 		Assert.hasText(keywords, "'keywords' must not be empty");
 
 		URI uri = assembleSearchEndpointURL(keywords);
@@ -58,6 +60,7 @@ public class DefaultStockTimeSeriesService implements StockTimeSeriesService {
 		
 		List<SearchMatch> bestMatches = response.getBody().getBestMatches();
 		LOG.debug("bestMatches = {}", bestMatches);
+		if(bestMatches == null) throw new AlphaVantageException();
 
 		return bestMatches;
 	}

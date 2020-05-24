@@ -18,7 +18,11 @@ import org.springframework.batch.item.support.CompositeItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.backoff.BackOffPolicy;
+import org.springframework.retry.backoff.FixedBackOffPolicy;
+import org.springframework.util.backoff.FixedBackOff;
 
+import de.mem89.kursalarm.alphavantage.exception.AlphaVantageException;
 import de.mem89.kursalarm.model.Stock;
 import de.mem89.kursalarm.processor.InfoProcessor;
 import de.mem89.kursalarm.processor.PriceProcessor;
@@ -49,7 +53,7 @@ public class JobConfig {
 	
 	@Resource(name = LogWriter.BEAN_ID)
 	public ItemWriter<Stock> writer;
-
+	
 	ItemProcessor<Stock,Stock> chainProcessor() {
 		CompositeItemProcessor<Stock, Stock> processor = new CompositeItemProcessor<>();
 		processor.setDelegates(Arrays.asList(
@@ -62,12 +66,23 @@ public class JobConfig {
 	}
 	
 	@Bean
+	BackOffPolicy backOffPolicy() {
+	    FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
+	    backOffPolicy.setBackOffPeriod(60 * 1000);
+	    return backOffPolicy;
+	}
+	
+	@Bean
 	Step fetchPrices() {
 		return stepBuilderFactory.get("fileToLogStep")
 				.<Stock, Stock>chunk(1)
 				.reader(reader)
 				.processor(chainProcessor())
 				.writer(writer)
+				.faultTolerant()
+				.retryLimit(3)
+				.backOffPolicy(backOffPolicy())
+				.retry(AlphaVantageException.class)
 				.build();
 	}
 
