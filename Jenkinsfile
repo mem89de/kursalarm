@@ -4,11 +4,12 @@ pipeline {
    stages {
       stage('Build') {
          steps {
-            // Get some code from a GitHub repository
-            git branch: $BRANCH_NAME, url: 'https://github.com/mem89de/kursalarm.git'
-
-            // Run Maven on a Unix agent.
-            sh "mvn -Dmaven.test.failure.ignore=true clean package"
+            sh "mvn clean compile"
+         }
+      }
+      stage('Test') {
+         steps {
+            sh "mvn test"
          }
 
          post {
